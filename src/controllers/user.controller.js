@@ -1,13 +1,13 @@
-const User = require("../models/user.model")
-import userService from "../services/user.service"
+const userService = require("../services/user.service")
 
 const createUser = async (req, res, next) => {
   try {
     // Get the user data from the request
     const { firstname, lastname, username, email, password } = req.body
     // Check if the user already exists
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] })
-
+    const existingUser =
+      (await userService.getUserByIdentifier(username)) ||
+      (await userService.getUserByIdentifier(email))
     // If the user already exists, return an error
     if (existingUser) {
       return next({
@@ -43,7 +43,7 @@ const getUserById = async (req, res, next) => {
   // Get the user ID from the request
   const { id } = req.params
   // Get the user from the database
-  const user = await User.findById(id)
+  const user = await userService.getUserById(id)
 
   // If the user is not found, return an error
   if (!user) {
