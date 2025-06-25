@@ -7,11 +7,12 @@ const envFilePath = path.resolve(__dirname, `../../.env.${environment}`)
 
 dotenv.config({ path: envFilePath })
 
-const { PORT, DATABASE_URI } = process.env
-if (!PORT || !DATABASE_URI) {
+const { PORT, DATABASE_URI, HASH } = process.env
+if (!PORT || !DATABASE_URI || !HASH) {
   throw new Error("Missing required environment variables")
 }
 module.exports = {
   port: PORT,
-  database_uri: DATABASE_URI
+  database_uri: DATABASE_URI,
+  hash: HASH
 }

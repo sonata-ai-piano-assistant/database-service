@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt")
 const db = require("../models")
+const config = require("../config/env")
 
 /** * Creates a new user in the database.
  * @param {Object} user - The user data to create.
@@ -14,7 +15,7 @@ const createUser = async (user) => {
   try {
     // hash the user's password
     if (user.password) {
-      user.password = await bcrypt.hash(user.password, Number(process.env.HASH))
+      user.password = await bcrypt.hash(user.password, Number(config.hash))
     }
     // Create a new user
     const newUser = new db.models.User(user)

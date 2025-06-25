@@ -3,7 +3,7 @@ const router = express.Router()
 const userRouter = require("./user.route")
 const errorHandlingMiddleware = require("../middlewares/errorHandling")
 
-router.use("/user", userRouter)
+router.use("/users", userRouter)
 
 router.use(errorHandlingMiddleware)
 
