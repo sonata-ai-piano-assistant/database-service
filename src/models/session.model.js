@@ -1,12 +1,4 @@
 module.exports = (mongoose) => {
-  const midiNoteSchema = new mongoose.Schema(
-    {
-      note: { type: Number, required: true },
-      velocity: { type: Number, required: true },
-      time: { type: Number, required: true }
-    },
-    { _id: false }
-  )
 
   const sessionSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -15,13 +7,7 @@ module.exports = (mongoose) => {
       ref: "Reference",
       required: true
     },
-    performances: [
-      {
-        type: Map, //"intro", "verse","chorus", "bridge","outro"
-        of: [[midiNoteSchema]],
-        default: {}
-      }
-    ],
+    performances: [{ type: mongoose.Schema.Types.ObjectId, ref: "Performance" }],
     threadId: { type: String },
     startedAt: { type: Date, default: Date.now },
     endedAt: { type: Date }
