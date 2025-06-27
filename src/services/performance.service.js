@@ -13,7 +13,9 @@ const getPerformancesBySessionId = async (sessionId) => {
       throw new Error(`Session with ID ${sessionId} not found`)
     }
     // Find performances referencing this session
-    const performances = await db.models.Performance.find({ session: sessionId })
+    const performances = await db.models.Performance.find({
+      session: sessionId
+    })
     return performances
   } catch (error) {
     throw new Error(`Failed to retrieve performances: ${error.message}`)
@@ -29,15 +31,20 @@ const getPerformancesBySessionId = async (sessionId) => {
 const getSectionPerformancesForSession = async (sessionId, section) => {
   try {
     // Find performances referencing this session and section
-    const performances = await db.models.Performance.find({ session: sessionId, section })
-    return performances.map(perf => ({
+    const performances = await db.models.Performance.find({
+      session: sessionId,
+      section
+    })
+    return performances.map((perf) => ({
       performanceId: perf._id,
       startedAt: perf.startedAt,
       endedAt: perf.endedAt,
       midiNotes: perf.midiNotes
     }))
   } catch (error) {
-    throw new Error(`Failed to retrieve performances for section: ${error.message}`)
+    throw new Error(
+      `Failed to retrieve performances for section: ${error.message}`
+    )
   }
 }
 
@@ -50,10 +57,10 @@ const getLatestPerformanceByUser = async (userId) => {
   try {
     const performance = await db.models.Performance.findOne({ user: userId })
       .sort({ endedAt: -1 })
-      .exec();
-    return performance;
+      .exec()
+    return performance
   } catch (error) {
-    throw new Error(`Failed to retrieve latest performance: ${error.message}`);
+    throw new Error(`Failed to retrieve latest performance: ${error.message}`)
   }
 }
 
@@ -64,9 +71,9 @@ const getLatestPerformanceByUser = async (userId) => {
  */
 const getPerformancesByUser = async (userId) => {
   try {
-    return await db.models.Performance.find({ user: userId }).exec();
+    return await db.models.Performance.find({ user: userId }).exec()
   } catch (error) {
-    throw new Error(`Failed to retrieve performances: ${error.message}`);
+    throw new Error(`Failed to retrieve performances: ${error.message}`)
   }
 }
 
@@ -80,16 +87,62 @@ const getLatestPerformanceByUserAndSection = async (userId, section) => {
   try {
     return await db.models.Performance.findOne({ user: userId, section })
       .sort({ endedAt: -1 })
-      .exec();
+      .exec()
   } catch (error) {
-    throw new Error(`Failed to retrieve latest performance for section: ${error.message}`);
+    throw new Error(
+      `Failed to retrieve latest performance for section: ${error.message}`
+    )
   }
 }
 
+// Retreive all user performances for a session and group by section
+const getPerformancesByUserAndSession = async (userId, sessionId) => {
+  try {
+    const session = await db.models.Session.findById(sessionId)
+    if (!session) {
+      throw new Error(`Session with ID ${sessionId} not found`)
+    }
+    // Validate userId
+    const user = await db.models.User.findById(userId)
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`)
+    }
+    // Find performances for the user in the session
+    const performancesFound = await db.models.Performance.find({
+      user: userId,
+      session: sessionId
+    }).lean()
+    // Group performances by section
+    const performances = performancesFound.reduce((acc, performance) => {
+      const section = performance.section
+      if (!acc[section]) {
+        acc[section] = []
+      }
+      acc[section].push(performance)
+      return acc
+    }, {})
+
+    // return session details along with grouped performances
+    return {
+      session: {
+        id: session._id,
+        name: session.name,
+        startedAt: session.startedAt,
+        endedAt: session.endedAt
+      },
+      performances
+    }
+  } catch (error) {
+    throw new Error(
+      `Failed to retrieve performances for user and session: ${error.message}`
+    )
+  }
+}
 module.exports = {
   getPerformancesBySessionId,
   getSectionPerformancesForSession,
   getLatestPerformanceByUser,
   getPerformancesByUser,
-  getLatestPerformanceByUserAndSection
+  getLatestPerformanceByUserAndSection,
+  getPerformancesByUserAndSession
 }

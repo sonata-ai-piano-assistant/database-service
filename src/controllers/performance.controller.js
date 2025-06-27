@@ -1,10 +1,12 @@
+const db = require("../models")
 const performanceService = require("../services/performance.service")
 
 // Get all performances for a session
 const getPerformancesBySessionId = async (req, res) => {
   try {
     const { sessionId } = req.params
-    const performances = await performanceService.getPerformancesBySessionId(sessionId)
+    const performances =
+      await performanceService.getPerformancesBySessionId(sessionId)
     res.json(performances)
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -15,7 +17,11 @@ const getPerformancesBySessionId = async (req, res) => {
 const getSectionPerformancesForSession = async (req, res) => {
   try {
     const { sessionId, section } = req.params
-    const performances = await performanceService.getSectionPerformancesForSession(sessionId, section)
+    const performances =
+      await performanceService.getSectionPerformancesForSession(
+        sessionId,
+        section
+      )
     res.json(performances)
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -26,7 +32,8 @@ const getSectionPerformancesForSession = async (req, res) => {
 const getLatestPerformanceByUser = async (req, res) => {
   try {
     const { userId } = req.params
-    const performance = await performanceService.getLatestPerformanceByUser(userId)
+    const performance =
+      await performanceService.getLatestPerformanceByUser(userId)
     res.json(performance)
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -48,7 +55,33 @@ const getPerformancesByUser = async (req, res) => {
 const getLatestPerformanceByUserAndSection = async (req, res) => {
   try {
     const { userId, section } = req.params
-    const performance = await performanceService.getLatestPerformanceByUserAndSection(userId, section)
+    const performance =
+      await performanceService.getLatestPerformanceByUserAndSection(
+        userId,
+        section
+      )
+    res.json(performance)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
+
+// Update feedback (score/comments) for a performance.
+const updatePerformanceFeedback = async (req, res) => {
+  try {
+    const { performanceId } = req.params
+    const { score, comments, details } = req.body
+
+    const performance = await db.models.Performance.findByIdAndUpdate(
+      performanceId,
+      { feedback: { score, comments, details } },
+      { new: true }
+    )
+
+    if (!performance) {
+      return res.status(404).json({ error: "Performance not found" })
+    }
+
     res.json(performance)
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -60,5 +93,6 @@ module.exports = {
   getSectionPerformancesForSession,
   getLatestPerformanceByUser,
   getPerformancesByUser,
-  getLatestPerformanceByUserAndSection
+  getLatestPerformanceByUserAndSection,
+  updatePerformanceFeedback
 }

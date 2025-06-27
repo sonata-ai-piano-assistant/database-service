@@ -1,5 +1,4 @@
 module.exports = (mongoose) => {
-
   const sessionSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     reference: {
@@ -7,7 +6,9 @@ module.exports = (mongoose) => {
       ref: "Reference",
       required: true
     },
-    performances: [{ type: mongoose.Schema.Types.ObjectId, ref: "Performance" }],
+    performances: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Performance" }
+    ],
     threadId: { type: String },
     startedAt: { type: Date, default: Date.now },
     endedAt: { type: Date }
