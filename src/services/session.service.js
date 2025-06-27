@@ -1,15 +1,18 @@
+const mongoose = require("mongoose")
 const db = require("../models")
 
 const createSession = async (userId, sessionData) => {
   try {
+    // Convert userId to ObjectId if needed
+    const userObjectId = new mongoose.Types.ObjectId(userId)
     // Validate userId
-    const user = await db.models.User.findById(userId)
+    const user = await db.models.User.findById(userObjectId)
     if (!user) {
       throw new Error(`User with ID ${userId} not found`)
     }
     // Create a new session for the user
     const session = await db.models.Session.create({
-      userId,
+      userId: userObjectId,
       ...sessionData
     })
     return session
@@ -20,8 +23,10 @@ const createSession = async (userId, sessionData) => {
 
 const addThreadIdToSession = async (sessionId, threadId) => {
   try {
+    // Convert sessionId to ObjectId if needed
+    const sessionObjectId = new mongoose.Types.ObjectId(sessionId)
     // Validate sessionId
-    const session = await db.models.Session.findById(sessionId)
+    const session = await db.models.Session.findById(sessionObjectId)
     if (!session) {
       throw new Error(`Session with ID ${sessionId} not found`)
     }
@@ -37,8 +42,10 @@ const addThreadIdToSession = async (sessionId, threadId) => {
 
 const getSessionById = async (sessionId) => {
   try {
+    // Convert sessionId to ObjectId if needed
+    const sessionObjectId = new mongoose.Types.ObjectId(sessionId)
     // Retrieve the session by ID
-    const session = await db.models.Session.findById(sessionId)
+    const session = await db.models.Session.findById(sessionObjectId)
     if (!session) {
       throw new Error(`Session with ID ${sessionId} not found`)
     }
@@ -51,13 +58,15 @@ const getSessionById = async (sessionId) => {
 // Get all sessions for a user with a score
 const getSessionsByUserId = async (userId) => {
   try {
+    // Convert userId to ObjectId if needed
+    const userObjectId = new mongoose.Types.ObjectId(userId)
     // Validate userId
-    const user = await db.models.User.findById(userId)
+    const user = await db.models.User.findById(userObjectId)
     if (!user) {
       throw new Error(`User with ID ${userId} not found`)
     }
     // Retrieve all sessions for the user
-    const sessions = await db.models.Session.find({ userId })
+    const sessions = await db.models.Session.find({ userId: userObjectId })
     return sessions
   } catch (error) {
     throw new Error(

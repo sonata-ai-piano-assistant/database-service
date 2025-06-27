@@ -1,3 +1,4 @@
+const mongoose = require("mongoose")
 const db = require("../models")
 
 /**
@@ -7,14 +8,15 @@ const db = require("../models")
  */
 const getPerformancesBySessionId = async (sessionId) => {
   try {
+    const sessionObjectId = new mongoose.Types.ObjectId(sessionId)
     // Validate sessionId
-    const session = await db.models.Session.findById(sessionId)
+    const session = await db.models.Session.findById(sessionObjectId)
     if (!session) {
       throw new Error(`Session with ID ${sessionId} not found`)
     }
     // Find performances referencing this session
     const performances = await db.models.Performance.find({
-      session: sessionId
+      session: sessionObjectId
     })
     return performances
   } catch (error) {
@@ -30,9 +32,10 @@ const getPerformancesBySessionId = async (sessionId) => {
  */
 const getSectionPerformancesForSession = async (sessionId, section) => {
   try {
+    const sessionObjectId = new mongoose.Types.ObjectId(sessionId)
     // Find performances referencing this session and section
     const performances = await db.models.Performance.find({
-      session: sessionId,
+      session: sessionObjectId,
       section
     })
     return performances.map((perf) => ({
@@ -55,7 +58,10 @@ const getSectionPerformancesForSession = async (sessionId, section) => {
  */
 const getLatestPerformanceByUser = async (userId) => {
   try {
-    const performance = await db.models.Performance.findOne({ user: userId })
+    const userObjectId = new mongoose.Types.ObjectId(userId)
+    const performance = await db.models.Performance.findOne({
+      user: userObjectId
+    })
       .sort({ endedAt: -1 })
       .exec()
     return performance
@@ -71,7 +77,8 @@ const getLatestPerformanceByUser = async (userId) => {
  */
 const getPerformancesByUser = async (userId) => {
   try {
-    return await db.models.Performance.find({ user: userId }).exec()
+    const userObjectId = new mongoose.Types.ObjectId(userId)
+    return await db.models.Performance.find({ user: userObjectId }).exec()
   } catch (error) {
     throw new Error(`Failed to retrieve performances: ${error.message}`)
   }
@@ -89,9 +96,11 @@ const getLatestPerformanceByUserSessionAndSection = async (
   section
 ) => {
   try {
+    const userObjectId = new mongoose.Types.ObjectId(userId)
+    const sessionObjectId = new mongoose.Types.ObjectId(sessionId)
     return await db.models.Performance.findOne({
-      user: userId,
-      session: sessionId,
+      user: userObjectId,
+      session: sessionObjectId,
       section
     })
       .sort({ endedAt: -1 })
@@ -106,19 +115,21 @@ const getLatestPerformanceByUserSessionAndSection = async (
 // Retreive all user performances for a session and group by section
 const getPerformancesByUserAndSession = async (userId, sessionId) => {
   try {
-    const session = await db.models.Session.findById(sessionId)
+    const userObjectId = new mongoose.Types.ObjectId(userId)
+    const sessionObjectId = new mongoose.Types.ObjectId(sessionId)
+    const session = await db.models.Session.findById(sessionObjectId)
     if (!session) {
       throw new Error(`Session with ID ${sessionId} not found`)
     }
     // Validate userId
-    const user = await db.models.User.findById(userId)
+    const user = await db.models.User.findById(userObjectId)
     if (!user) {
       throw new Error(`User with ID ${userId} not found`)
     }
     // Find performances for the user in the session
     const performancesFound = await db.models.Performance.find({
-      user: userId,
-      session: sessionId
+      user: userObjectId,
+      session: sessionObjectId
     }).lean()
     // Group performances by section
     const performances = performancesFound.reduce((acc, performance) => {
