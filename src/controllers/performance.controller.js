@@ -52,12 +52,13 @@ const getPerformancesByUser = async (req, res) => {
 }
 
 // Get latest performance for a user and section
-const getLatestPerformanceByUserAndSection = async (req, res) => {
+const getLatestPerformanceByUserSessionAndSection = async (req, res) => {
   try {
-    const { userId, section } = req.params
+    const { userId, sessionId, section } = req.params
     const performance =
-      await performanceService.getLatestPerformanceByUserAndSection(
+      await performanceService.getLatestPerformanceByUserSessionAndSection(
         userId,
+        sessionId,
         section
       )
     res.json(performance)
@@ -93,6 +94,6 @@ module.exports = {
   getSectionPerformancesForSession,
   getLatestPerformanceByUser,
   getPerformancesByUser,
-  getLatestPerformanceByUserAndSection,
+  getLatestPerformanceByUserSessionAndSection,
   updatePerformanceFeedback
 }

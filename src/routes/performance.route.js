@@ -25,8 +25,8 @@ router.get("/user/:userId", performanceController.getPerformancesByUser)
 
 // Get latest performance for a user and section
 router.get(
-  "/user/:userId/section/:section/latest",
-  performanceController.getLatestPerformanceByUserAndSection
+  "/user/:userId/session/:sessionId/section/:section/latest",
+  performanceController.getLatestPerformanceByUserSessionAndSection
 )
 
 // Update feedback (score/comments) for a performance

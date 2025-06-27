@@ -83,9 +83,17 @@ const getPerformancesByUser = async (userId) => {
  * @param {string} section - The section of the song.
  * @returns {Promise<Object|null>} - The latest performance document or null.
  */
-const getLatestPerformanceByUserAndSection = async (userId, section) => {
+const getLatestPerformanceByUserSessionAndSection = async (
+  userId,
+  sessionId,
+  section
+) => {
   try {
-    return await db.models.Performance.findOne({ user: userId, section })
+    return await db.models.Performance.findOne({
+      user: userId,
+      session: sessionId,
+      section
+    })
       .sort({ endedAt: -1 })
       .exec()
   } catch (error) {
@@ -143,6 +151,6 @@ module.exports = {
   getSectionPerformancesForSession,
   getLatestPerformanceByUser,
   getPerformancesByUser,
-  getLatestPerformanceByUserAndSection,
+  getLatestPerformanceByUserSessionAndSection,
   getPerformancesByUserAndSession
 }
