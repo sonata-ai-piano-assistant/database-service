@@ -1,20 +1,25 @@
 module.exports = (mongoose) => {
   const subscriptionSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      enum: ["basic", "premium", "pro"],
-      unique: true
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    stripeSubscriptionId: { type: String, required: true, unique: true },
+    plan: { type: String, enum: ["basic", "premium", "pro"], required: true },
     status: {
       type: String,
-      enum: ["active", "inactive", "canceled"],
-      default: "inactive"
+      required: true,
+      enum: [
+        "active",
+        "canceled",
+        "past_due",
+        "unpaid",
+        "incomplete",
+        "incomplete_expired",
+        "trialing",
+        "paused",
+        "expired"
+      ]
     },
-    stripeProductId: { type: String }
+    currentPeriodEnd: { type: Date },
+    createdAt: { type: Date, default: Date.now }
   })
 
   return mongoose.model("Subscription", subscriptionSchema)
