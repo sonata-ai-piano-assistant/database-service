@@ -103,9 +103,7 @@ const updatePerformanceFeedback = async (req, res) => {
     ) {
       return res.status(400).json({ error: "Invalid or missing performanceId" })
     }
-
-    const objectId = mongoose.Types.ObjectId(performanceId)
-
+    const objectId = new mongoose.Types.ObjectId(performanceId)
     const performance = await db.models.Performance.findByIdAndUpdate(
       objectId,
       { feedback: { score, comments, details } },
@@ -118,7 +116,9 @@ const updatePerformanceFeedback = async (req, res) => {
 
     res.json(performance)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({
+      error: `Feedback of Performance with ID(${req.params.performanceId}) was not updated ${error.message}`
+    })
   }
 }
 
