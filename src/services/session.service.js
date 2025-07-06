@@ -12,7 +12,7 @@ const createSession = async (userId, sessionData) => {
     }
     // Create a new session for the user
     const session = await db.models.Session.create({
-      userId: userObjectId,
+      user: userObjectId,
       ...sessionData
     })
     return session
