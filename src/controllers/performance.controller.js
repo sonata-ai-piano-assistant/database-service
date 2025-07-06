@@ -1,5 +1,6 @@
 const db = require("../models")
 const performanceService = require("../services/performance.service")
+const mongoose = require("mongoose")
 
 // Create a new performance
 const createPerformance = async (req, res) => {
@@ -95,8 +96,18 @@ const updatePerformanceFeedback = async (req, res) => {
     const { performanceId } = req.params
     const { score, comments, details } = req.body
 
+    if (
+      !performanceId ||
+      typeof performanceId !== "string" ||
+      performanceId.length !== 24
+    ) {
+      return res.status(400).json({ error: "Invalid or missing performanceId" })
+    }
+
+    const objectId = mongoose.Types.ObjectId(performanceId)
+
     const performance = await db.models.Performance.findByIdAndUpdate(
-      performanceId,
+      objectId,
       { feedback: { score, comments, details } },
       { new: true }
     )
