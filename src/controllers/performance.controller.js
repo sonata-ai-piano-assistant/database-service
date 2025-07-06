@@ -1,6 +1,28 @@
 const db = require("../models")
 const performanceService = require("../services/performance.service")
 
+// Create a new performance
+const createPerformance = async (req, res) => {
+  try {
+    const { startedAt, endedAt, section, midiNotes, user, session, feedback } =
+      req.body
+
+    const performance = await db.models.Performance.create({
+      startedAt,
+      endedAt,
+      section,
+      midiNotes,
+      user,
+      session,
+      feedback
+    })
+
+    res.status(201).json(performance)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
+
 // Get all performances for a session
 const getPerformancesBySessionId = async (req, res) => {
   try {
@@ -90,6 +112,7 @@ const updatePerformanceFeedback = async (req, res) => {
 }
 
 module.exports = {
+  createPerformance,
   getPerformancesBySessionId,
   getSectionPerformancesForSession,
   getLatestPerformanceByUser,

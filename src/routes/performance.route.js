@@ -2,6 +2,9 @@ const express = require("express")
 const router = express.Router()
 const performanceController = require("../controllers/performance.controller")
 
+// Create a new performance
+router.post("/", performanceController.createPerformance)
+
 // Get all performances for a session
 router.get(
   "/session/:sessionId",
