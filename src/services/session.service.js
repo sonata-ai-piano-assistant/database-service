@@ -75,9 +75,26 @@ const getSessionsByUserId = async (userId) => {
   }
 }
 
+// End a session by setting endedAt
+const endSession = async (sessionId) => {
+  try {
+    const sessionObjectId = new mongoose.Types.ObjectId(sessionId)
+    const session = await db.models.Session.findById(sessionObjectId)
+    if (!session) {
+      throw new Error(`Session with ID ${sessionId} not found`)
+    }
+    session.endedAt = new Date()
+    await session.save()
+    return session
+  } catch (error) {
+    throw new Error(`Failed to end session: ${error.message}`)
+  }
+}
+
 module.exports = {
   createSession,
   addThreadIdToSession,
   getSessionById,
-  getSessionsByUserId
+  getSessionsByUserId,
+  endSession
 }

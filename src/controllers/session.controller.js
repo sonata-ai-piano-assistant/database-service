@@ -62,10 +62,24 @@ const getPerformancesByUserAndSession = async (req, res, next) => {
     })
   }
 }
+// End a session
+const endSession = async (req, res, next) => {
+  try {
+    const { sessionId } = req.params
+    const session = await sessionService.endSession(sessionId)
+    res.json(session)
+  } catch (error) {
+    next({
+      status: 500,
+      message: "Failed to end session"
+    })
+  }
+}
 
 module.exports = {
   createSession,
   addThreadIdToSession,
   getSessionById,
-  getPerformancesByUserAndSession
+  getPerformancesByUserAndSession,
+  endSession
 }
