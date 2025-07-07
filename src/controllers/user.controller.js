@@ -1,3 +1,4 @@
+const sessionService = require("../services/session.service")
 const userService = require("../services/user.service")
 const subscriptionService = require("../services/subscription.service")
 
@@ -172,6 +173,25 @@ const getSubscriptionsByUserId = async (req, res, next) => {
     })
   }
 }
+// Get all sessions for a user
+const getSessionsByUserId = async (req, res, next) => {
+  try {
+    const { userId } = req.params
+    const sessions = await sessionService.getSessionsByUserId(userId)
+    if (!sessions || sessions.length === 0) {
+      return next({
+        status: 404,
+        message: `No sessions found for user with ID ${userId}`
+      })
+    }
+    return res.json({ data: sessions })
+  } catch (error) {
+    return next({
+      status: 500,
+      message: error.message
+    })
+  }
+}
 
 module.exports = {
   getUserById,
@@ -179,5 +199,6 @@ module.exports = {
   getUserByIdentifier,
   findUserByEmailOrOAuth,
   verifyUserCredentials,
-  getSubscriptionsByUserId
+  getSubscriptionsByUserId,
+  getSessionsByUserId
 }

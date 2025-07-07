@@ -66,7 +66,12 @@ const getSessionsByUserId = async (userId) => {
       throw new Error(`User with ID ${userId} not found`)
     }
     // Retrieve all sessions for the user
-    const sessions = await db.models.Session.find({ userId: userObjectId })
+    const sessions = await db.models.Session.find({
+      user: userObjectId
+    }).populate({
+      path: "reference",
+      select: "name"
+    })
     return sessions
   } catch (error) {
     throw new Error(

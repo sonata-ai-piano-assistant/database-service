@@ -16,5 +16,7 @@ router.post("/verify", userController.verifyUserCredentials)
 // Route to get user by ID
 router.get("/:id", userController.getUserById)
 router.get("/:id/subscriptions", userController.getSubscriptionsByUserId)
+// Get all sessions for a user
+router.get("/:userId/sessions", userController.getSessionsByUserId)
 
 module.exports = router
