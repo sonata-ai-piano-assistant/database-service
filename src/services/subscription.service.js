@@ -12,3 +12,9 @@ exports.createOrUpdateSubscription = async (data) => {
 exports.deleteSubscription = async (stripeSubscriptionId) => {
   return Subscription.findOneAndDelete({ stripeSubscriptionId })
 }
+
+exports.getSubscriptionsByUserId = async (userId) => {
+  return Subscription.find({
+    userId: userId
+  })
+}

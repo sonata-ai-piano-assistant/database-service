@@ -16,5 +16,7 @@ router.get(
   "/:sessionId/user/:userId/performances",
   sessionController.getPerformancesByUserAndSession
 )
+// End a session
+router.patch("/:sessionId/end", sessionController.endSession)
 
 module.exports = router
