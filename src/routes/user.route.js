@@ -15,5 +15,6 @@ router.post("/verify", userController.verifyUserCredentials)
 
 // Route to get user by ID
 router.get("/:id", userController.getUserById)
+router.get("/:id/subscriptions", userController.getSubscriptionsByUserId)
 
 module.exports = router

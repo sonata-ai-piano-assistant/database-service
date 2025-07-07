@@ -1,4 +1,5 @@
 const userService = require("../services/user.service")
+const subscriptionService = require("../services/subscription.service")
 
 const createUser = async (req, res, next) => {
   try {
@@ -146,10 +147,37 @@ const verifyUserCredentials = async (req, res, next) => {
   }
 }
 
+const getSubscriptionsByUserId = async (req, res, next) => {
+  try {
+    const { userId } = req.params
+    // Get the subscriptions by user ID
+    const subscriptions =
+      await subscriptionService.getSubscriptionsByUserId(userId)
+    // If no subscriptions are found, return an error
+    if (!subscriptions || subscriptions.length === 0) {
+      return next({
+        status: 404,
+        message: `No subscriptions found for user with ID ${userId}`
+      })
+    }
+    // Return the subscriptions
+    return res.json({
+      data: subscriptions
+    })
+  } catch (error) {
+    // If there is an error, return an error
+    return next({
+      status: 500,
+      message: error.message
+    })
+  }
+}
+
 module.exports = {
   getUserById,
   createUser,
   getUserByIdentifier,
   findUserByEmailOrOAuth,
-  verifyUserCredentials
+  verifyUserCredentials,
+  getSubscriptionsByUserId
 }
