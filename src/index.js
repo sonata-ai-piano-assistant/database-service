@@ -8,6 +8,7 @@ const {
 const apiRouter = require("./routes")
 const { port } = require("./config/env")
 const db = require("./models")
+const loggerMiddleware = require("./middlewares/logger.middleware")
 
 const app = express()
 app.use(cors())
@@ -18,7 +19,7 @@ initializeMetrics("database")
 
 // 📊 MIDDLEWARE MÉTRIQUES
 app.use(metricsMiddleware)
-
+app.use(loggerMiddleware)
 // 🛣️ ROUTES MÉTRIQUES
 app.use(metricsRouter)
 
