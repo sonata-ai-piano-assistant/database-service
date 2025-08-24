@@ -8,6 +8,7 @@ const subscriptionRouter = require("./subscription.route")
 const notificationRouter = require("./notification.route")
 
 const referenceRouter = require("./reference.route")
+const musicRouter = require("./music.route")
 const errorHandlingMiddleware = require("../middlewares/errorHandling")
 
 router.use("/users", userRouter)
@@ -16,7 +17,7 @@ router.use("/sessions", sessionRouter)
 router.use("/subscriptions", subscriptionRouter)
 router.use("/notifications", notificationRouter)
 router.use("/references", referenceRouter)
-
+router.use("/music", musicRouter)
 router.use(errorHandlingMiddleware)
 
 module.exports = router
