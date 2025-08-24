@@ -118,9 +118,9 @@ const findUserByEmailOrOAuth = async (req, res, next) => {
 const verifyUserCredentials = async (req, res, next) => {
   try {
     // Get the user data from the request
-    const { identifier, password } = req.body
+    const { identifier, password, email } = req.body
     // Check if the user exists
-    const user = await userService.getUserByIdentifier(identifier)
+    const user = await userService.getUserByIdentifier(identifier || email)
     // If the user does not exist, return an error
     if (!user) {
       return next({

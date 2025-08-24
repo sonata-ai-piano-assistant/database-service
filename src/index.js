@@ -8,6 +8,7 @@ const {
 const apiRouter = require("./routes")
 const { port } = require("./config/env")
 const db = require("./models")
+const loggerMiddleware = require("./middlewares/logger.middleware")
 
 const app = express()
 app.use(cors())
@@ -18,7 +19,7 @@ initializeMetrics("database")
 
 // 📊 MIDDLEWARE MÉTRIQUES
 app.use(metricsMiddleware)
-
+app.use(loggerMiddleware)
 // 🛣️ ROUTES MÉTRIQUES
 app.use(metricsRouter)
 
@@ -27,8 +28,14 @@ app.get("/", (_, res) => {
 })
 app.use("/api", apiRouter)
 
-app.listen(port, async () => {
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
   // Connect to the database
-  await db.connectDB()
+  db.connectDB()
+    .then(() => {
+      console.log("Connected to the database")
+    })
+    .catch((err) => {
+      console.error("Error connecting to the database", err)
+    })
 })
