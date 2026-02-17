@@ -10,6 +10,7 @@ module.exports = (mongoose) => {
 
   const referenceSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    fileName: { type: String, required: true },
     sections: {
       intro: { type: [midiNoteSchema], default: [] },
       verse: { type: [midiNoteSchema], default: [] }, // "couplet" translated to "verse"

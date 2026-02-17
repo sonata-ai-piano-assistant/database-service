@@ -5,6 +5,9 @@ const referenceController = require("../controllers/reference.controller")
 // Create a new reference
 router.post("/", referenceController.createReference)
 
+// Get reference audio by ID
+router.get("/:id/audio", referenceController.getReferenceAudioById)
+
 // Get a reference by ID
 router.get("/:id", referenceController.getReferenceById)
 

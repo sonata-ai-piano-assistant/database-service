@@ -1,5 +1,7 @@
 const db = require("../models")
-
+const fs = require("fs")
+const path = require("path")
+const musicDir = path.join(__dirname, "../music")
 // Create a new reference
 const createReference = async (req, res) => {
   try {
@@ -28,7 +30,28 @@ const getReferenceById = async (req, res) => {
   }
 }
 
+// Get reference audio by ID
+const getReferenceAudioById = async (req, res) => {
+  try {
+    const { id } = req.params
+    const reference = await db.models.Reference.findById(id)
+    if (!reference) {
+      return res.status(404).json({ error: "Reference not found" })
+    }
+    const filePath = path.join(musicDir, reference.fileName)
+    res.setHeader("Content-Type", "audio/midi")
+    const readStream = fs.createReadStream(filePath)
+    readStream.pipe(res)
+    readStream.on("error", () => {
+      res.status(500).end()
+    })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
+
 module.exports = {
   createReference,
-  getReferenceById
+  getReferenceById,
+  getReferenceAudioById
 }
