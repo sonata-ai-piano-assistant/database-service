@@ -10,6 +10,12 @@ const createSession = async (userId, sessionData) => {
     if (!user) {
       throw new Error(`User with ID ${userId} not found`)
     }
+    // Auto-end any active sessions for this user
+    await db.models.Session.updateMany(
+      { user: userObjectId, endedAt: null },
+      { $set: { endedAt: new Date() } }
+    )
+
     // Create a new session for the user
     const session = await db.models.Session.create({
       user: userObjectId,
