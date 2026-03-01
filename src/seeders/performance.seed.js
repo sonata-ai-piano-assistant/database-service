@@ -5,7 +5,7 @@ const db = require("../models")
 
 async function seedPerformances() {
   await mongoose.connect(env.database_uri)
-  const userId = "682b0ab77ae948c4704d153b"
+  const userId = "69a446edc605679337aa1435"
 
   // Find a session for this user
   const session = await db.models.Session.findOne({ user: userId })

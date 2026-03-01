@@ -6,11 +6,11 @@ const db = require("../models")
 async function seedSessions() {
   await mongoose.connect(env.database_uri)
 
-  const userId = "682b0ab77ae948c4704d153b"
+  const userId = "69a446edc605679337aa1435"
 
   // Find the reference seeded previously
   const reference = await db.models.Reference.findOne({
-    name: "Für Elise - Intro"
+    name: "Für Elise - Beethoven"
   })
   if (!reference)
     throw new Error("Reference not found. Please seed references first.")
