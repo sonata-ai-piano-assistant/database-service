@@ -46,6 +46,7 @@ const getSessionById = async (sessionId) => {
     const sessionObjectId = new mongoose.Types.ObjectId(sessionId)
     // Retrieve the session by ID
     const session = await db.models.Session.findById(sessionObjectId)
+      .populate({ path: "reference", select: "name" })
     if (!session) {
       throw new Error(`Session with ID ${sessionId} not found`)
     }
